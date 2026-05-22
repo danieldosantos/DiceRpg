@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DiceRPG MVP</string>
+    <string name="campaigns">Campanhas</string>
+    <string name="chat">Chat</string>
+    <string name="sheet">Ficha</string>
+    <string name="dice">Dados</string>
+</resources>
