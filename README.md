@@ -53,3 +53,8 @@ Acesse:
 - Upload de imagem (mensagens com mídia).
 - Controle de membership (convite/aprovação) e campanhas públicas (LFP).
 - Testes automatizados unitários e de integração.
+
+
+cd /c/DiceRpg/backend
+source .venv/Scripts/activate
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8002
