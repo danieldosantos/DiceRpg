@@ -1,0 +1,640 @@
+# mRPG descontinuado e lições para um MVP Android em Kotlin
+
+## Resumo executivo
+
+O mRPG foi, na prática, uma plataforma **mobile-first e também web** para RPG assíncrono por texto, centrada em **campanhas**, **fichas customizáveis**, **chat com personas**, **rolagem de dados**, **macros** e um sistema público de **Looking for Players** para encontrar mesas e jogadores. A documentação oficial e os espelhos de loja mostram um produto bem mais próximo de um **“text-based VTT”** do que de um VTT focado em grid, tokens e mapas interativos. citeturn28search0turn23view0turn49view0
+
+A premissa de que o app teria sido “descontinuado em 2022” **não se sustenta nas fontes primárias e quase-primárias que localizei**. Ao contrário: 2022 foi um ano de forte atividade, com versões sucessivas, um relançamento visual chamado de **“mRPG second edition”** em setembro de 2022 e adição de recursos como **editar/apagar mensagens**, **salvar/compartilhar imagens**, **resultado completo das rolagens no chat** e **referência interna de campos para fórmulas/rolagens**. O anúncio explícito de encerramento só aparece nas notas das versões **3.5.0/3.5.1**, em novembro de 2024, informando que o serviço fecharia até o fim daquele ano e que seria possível **exportar as mensagens das campanhas**. Espelhos da Play Store divergem por poucos dias, mas convergem em remoção no fim de dezembro de 2024 ou começo de janeiro de 2025. citeturn24view0turn47view0turn22view0turn38view0
+
+Do lado do valor percebido, o que mais aparece nas fontes é um núcleo muito claro: **fichas customizadas para homebrew**, **chat como personagem/NPC/narrador**, **descoberta pública de campanhas** e **comodidade de jogar por celular, de forma assíncrona**. O que mais desgastou a experiência foi outro conjunto igualmente claro: **bugs**, **lag**, **falhas com imagens**, **notificações/mensagens inconsistentes** e **ads**. citeturn42view0turn49view0turn22view0turn38view0
+
+A recomendação para um MVP Android em Kotlin, portanto, é **não tentar reconstruir um Roll20/Foundry em miniatura**. O caminho mais sensato é reconstruir primeiro o que fazia o mRPG ser lembrado: **feed público de campanhas**, **chat por persona**, **ficha flexível**, **rolagem e macros**, **imagens**, **sincronização confiável** e **exportação**. Recursos de VTT pesado, compêndio licenciado, marketplace de módulos e automações complexas devem ficar para depois. citeturn49view0turn42view0turn40search13
+
+## Histórico real do app e do encerramento
+
+A melhor reconstituição histórica disponível hoje é a seguinte.
+
+| Período | Marco histórico | Evidência |
+|---|---|---|
+| 2018 | O app já constava no Google Play em janeiro de 2018. | AppBrain informa disponibilidade no Google Play desde janeiro de 2018; Chrome-Stats registra creation date em 2018-01-16. citeturn22view0turn38view0 |
+| 2019 | O projeto passou a dialogar com o público brasileiro; um post em português no Reddit anunciava que o mRPG “agora também está em Português” e divulgava um vídeo explicativo para jogar D&D 5e no app. | citeturn39search1 |
+| 2021 | Houve uma campanha de crowdfunding chamada **mRPG – Second Edition**, sediada em Ribeirão Preto, Brasil, pela Ensemble LLC. Ela foi **malsucedida**, arrecadando US$ 10.423 de uma meta de US$ 60.000 entre 1º de outubro e 15 de novembro de 2021. | citeturn30view0 |
+| 2022 | Longe de acabar, o app seguia ativo: a versão 2.25.1 adicionou link para um novo servidor no Discord; a 2.26.1 corrigiu confirmação de número de celular; a 2.26.2 ajustou timeout dos anúncios e um elemento visual chamado “alignment chart”. | citeturn47view0turn46search3turn23view0 |
+| 2022 | Em 28 de setembro de 2022, a versão 3.0.10 foi descrita como **“mRPG second edition, with new and improved visuals!”**. | citeturn24view0 |
+| 2022 | Entre outubro e novembro de 2022, o app recebeu: **editar/apagar mensagens**, **salvar/compartilhar imagens**, **nova home com campanhas e pedidos**, **mostrar resultado completo das rolagens**, **trocar o remetente de imagem já enviada**, e **nome interno de campo para uso em fórmulas e rolagens**. | citeturn24view0 |
+| 2023–2024 | Continuaram saindo updates: ordenação alfabética de macros, correções de crash ao enviar imagens, correções de login Facebook, subscriptions, account deletion, filtros e segurança. | citeturn24view0turn20view1 |
+| 2024 | As versões 3.5.0 e 3.5.1, publicadas em novembro de 2024, trouxeram a mensagem oficial: **o mRPG seria encerrado até o fim de 2024**, com **exportação das mensagens de campanha**. | citeturn23view0turn17view0turn47view0 |
+| fim de 2024 / início de 2025 | A comunidade passou a falar do fechamento como fato consumado; espelhos registram remoção da Play Store em **29/12/2024** ou **02/01/2025**. | citeturn43view0turn22view0turn38view0 |
+
+A síntese histórica mais importante é esta: **2022 foi ano de expansão e relançamento, não de descontinuação**. O encerramento só fica claramente documentado em **novembro de 2024**. citeturn24view0turn23view0turn22view0
+
+Também há uma pequena complexidade de nomenclatura/entidade nas fontes. O app aparece associado a **Adriano Emerick Cola**, **GlueFields** e, no crowdfunding de 2021, a **Ensemble LLC**. Isso sugere que o produto teve evolução de marca e/ou estrutura comercial ao longo do tempo, embora as fontes públicas localizadas não expliquem formalmente essa transição. citeturn17view0turn22view0turn30view0
+
+## Catálogo detalhado de funcionalidades e recursos
+
+### O que o mRPG comprovadamente oferecia
+
+A forma mais segura de catalogar o produto é separar o que está **claramente confirmado** do que aparece apenas em **memória de usuários** ou em sinais indiretos.
+
+| Eixo | O que foi confirmado | Evidência |
+|---|---|---|
+| Campanhas | Criar campanhas, convidar amigos e participar de **múltiplas campanhas ao mesmo tempo**. | Descrição oficial de loja espelhada em Android e iOS. citeturn17view0turn23view0 |
+| Descoberta pública de mesas | Sistema de **Looking for Players**: GMs publicavam campanhas e jogadores podiam pedir entrada; havia ainda **filtros** na descoberta. | Site oficial e descrição de loja; changelog de 2024 cita correção de “filters crash”. citeturn28search0turn28search7turn24view0 |
+| Gestão de personagens | O GM podia definir o **template da ficha**, criar personagens e **atribuir** cada personagem a um jogador. | citeturn17view0turn23view0 |
+| Chat por persona | O GM podia falar como **ele mesmo**, como **narrador** ou como **NPC**; jogadores podiam falar como **eles mesmos** ou como o personagem atribuído. | Descrição oficial e captura oficial do seletor de persona. citeturn23view0turn32view3 |
+| Fichas customizadas | A página oficial vende o produto como algo em que você pode **criar suas próprias sheets** e adequá-las a **qualquer sistema**. | citeturn28search0turn36search0 |
+| Sistema agnóstico | Não aparece um catálogo fechado de sistemas “nativamente suportados”; a proposta oficial era **agnóstica a sistema**, via templates customizados. Usuários citam uso com **D&D 5e**, **Fate**, **Savage Worlds** e **Open Legend**. | citeturn28search0turn39search1turn39search10turn48search1turn8search7 |
+| Rolagem de dados | Roller embutido no chat com notação padrão como `1d20`, `3d6` e `d20+10`. | citeturn17view0turn23view0 |
+| Rolagem por atributos/fórmulas | A página oficial diz que personagens podiam **rolar dados usando seus atributos**; em 2022 o changelog adicionou **nome interno de campo** para referência em **fórmulas e rolagens**. | citeturn28search0turn24view0 |
+| Macros | O site oficial destaca criação de **macros** para ataques, iniciativa e outras tarefas repetitivas. Em 2023 as macros passaram a ser **ordenadas alfabeticamente**. A captura oficial mostra macros **públicas** e **privadas**. | citeturn28search0turn20view1turn32view2 |
+| Inventário e log | A captura oficial da ficha mostra abas de **Sheet**, **Inventory** e **Log**; o changelog de 3.4.0 menciona bug relacionado a referência a **inventory item**. | citeturn32view1turn24view0 |
+| Imagens e anexos | Era possível **enviar imagens** no chat; a descrição cita explicitamente imagens de mapas e monstros. Depois vieram **save/share images** e correções ligadas ao envio/seleção de imagens. | citeturn17view0turn24view0turn20view1 |
+| UX de chat | O app ganhou **editar e deletar mensagens**; também ganhou configuração para mostrar o **resultado completo das rolagens** e a possibilidade de **trocar o remetente de uma imagem já enviada**. | citeturn24view0 |
+| Home e descoberta | O changelog de 3.3.0 fala em **nova home** com lista de jogos pedindo entrada, campanhas abertas a novos jogadores e dicas/guias do mRPG. | citeturn24view0 |
+| Web + sincronização | Os termos oficiais dizem que mensagens, fichas e mídia eram **processadas e armazenadas nos servidores** do mRPG para acesso a partir de **qualquer dispositivo**, com **push notifications** e opção de **mutar** chats/usuários/campanhas. | citeturn36search3turn4view0 |
+| Conta e moderação básica | Os termos tratam de conta, exclusão de conta, conteúdo adulto, denúncias e política de conduta. O changelog mostra correções para **Facebook login** e **account deletion**. | citeturn4view0turn24view0 |
+| Monetização | O app era **gratuito**, tinha **ads**, e passou a ter **subscription** para remover anúncios; a listagem iOS espelhada mostra compra para **Remove Ads** por **US$ 0,99**. | citeturn24view0turn22view0turn23view0 |
+| Exportação | No fechamento, o recurso confirmado foi **exportar mensagens das campanhas**; usuários lembram disso como forma de preservar memórias de jogo. | citeturn23view0turn17view0turn43view0 |
+
+### O que apareceu nas fontes, mas com evidência insuficiente ou indireta
+
+| Recurso | Leitura mais prudente | Evidência |
+|---|---|---|
+| Mapas interativos, grid, tokens, fog of war, áudio | **Não encontrei evidência primária robusta** de que o mRPG tivesse um tabletop visual com mapas manipuláveis. O material oficial fala em **enviar imagens**, e um texto de migração para o Quest Portal apresenta **map library**, **fog of war** e **integrated audio** como vantagens do novo destino, não como herança do mRPG. | citeturn17view0turn23view0turn49view0 |
+| Integração nativa com Roll20/Foundry/VTTs | **Não encontrei evidência de integração nativa**. O máximo que localizei foi um comentário do próprio desenvolvedor no Reddit explicando que o tipo **Invite** podia ser usado para encontrar jogadores para uma campanha “em outra plataforma”, mas isso é recrutamento externo, não integração técnica. | citeturn40search14 |
+| Compêndios, marketplace, módulos oficiais | **Não encontrei catálogo oficial** de compêndios, marketplace, biblioteca de módulos ou automações ligadas a licenças de sistemas. O produto parece ter sido orientado a campanha, chat e fichas, não a compêndio licenciado. | citeturn28search0turn30view0turn49view0 |
+| Import/export de templates de ficha | O único export confirmado no fechamento foi o de **mensagens de campanha**. Ao mesmo tempo, usuários se mostravam preocupados em **salvar templates de ficha**, o que sugere que ao menos esse export **não era claro ou não existia**. | citeturn23view0turn43view0turn41search1 |
+| OOC tabs, PM integrado, exploding d6 | Há **relatos comunitários** de que o mRPG tinha coisas como **OOC tabs**, **private message** e até suporte prático a certos dados/rolagens mais específicas, mas isso **não ficou confirmado por fonte primária** na pesquisa que fiz. | citeturn48search2turn44search0 |
+
+### Onde estão as evidências visuais e documentais
+
+| Tipo de evidência | Onde localizar | O que mostram |
+|---|---|---|
+| Screenshots oficiais de descoberta/LFP | Página oficial, imagem de “Find RPG Tables”. citeturn32view0 | Feed de campanhas e fluxo de entrada em mesas. |
+| Screenshot oficial de chat + ficha | Página oficial, imagem de “Characters / Sheet / Inventory / Log”. citeturn32view1 | Chat por persona, retrato do personagem e abas de ficha/inventário/log. |
+| Screenshot oficial de macros | Página oficial, imagem de macro pública/privada. citeturn32view2 | DSL de macro e uso dentro do composer do chat. |
+| Screenshot oficial de troca de persona | Página oficial, imagem com chips “Me / GM / Characters”. citeturn32view3 | Alternância rápida de identidade ao postar. |
+| Screenshot oficial de template de ficha | Página oficial, imagem do editor/template de campos. citeturn31view0 | Estrutura de campos e seções da sheet. |
+| Galeria Android | APKPure Android. citeturn17view0 | Várias capturas do app e histórico de versões. |
+| Galeria iPhone/iPad | AppPure iOS. citeturn23view0 | Capturas separadas para iPhone e iPad. |
+| Tutoriais/manuais em vídeo | Há tutorial “How To Get Started” em inglês e materiais em português como “Criando uma Ficha de RPG no Celular - mRPG e A&M” e a playlist “Jogando RPG pelo Celular”. citeturn44search5turn34search1turn34search4 | Demonstração prática de criação de campanha e ficha. |
+| Changelog | AppPure iOS, APKPure Android, Soft112. citeturn24view0turn17view0turn47view0 | Linha do tempo de features e correções. |
+| Reviews e feedback público | AppBrain e Chrome-Stats. citeturn22view0turn38view0 | Uso percebido, problemas recorrentes e reação ao fechamento. |
+
+## O que os usuários mais valorizavam
+
+As fontes de usuários convergem em um padrão muito nítido: o mRPG era lembrado menos como “um app de dados” e mais como **um lugar completo para manter campanhas vivas no celular**. Um ex-usuário que migrou para o Quest Portal resumiu o apelo do mRPG como um ambiente **simples, flexível, acessível em qualquer dispositivo** e com **customização suficiente para criar regras próprias e templates de personagens**. Em paralelo, um post no r/DnD que buscava substituto para o mRPG destacou exatamente a mesma tríade: **fichas customizadas**, **atribuição de personagens a jogadores** e **chat/rolagem integrados**, com a capacidade de falar como você, como seu personagem e de o mestre criar NPCs. citeturn49view0turn42view0
+
+No público lusófono, aparece um quarto ponto de valor: **a visibilidade pública de campanhas**. Em um tópico brasileiro, um ex-usuário lamenta que o Discord “não tem a parte de deixar sua campanha pública”, o que bate diretamente com a proposta oficial de LFP do mRPG. Isso sugere que a descoberta de mesas não era um acessório; era parte do valor central do produto. citeturn12search1turn28search0
+
+Também há um valor claramente emocional: o mRPG funcionava como **arquivo de relações, memórias e campanhas longas**. O post de despedida no r/Mrpgapp agradece explicitamente a Adriano e Felipe e destaca que o app foi importante “especialmente durante os meses de lockdown da COVID”, além de agradecer a possibilidade de exportar os logs das campanhas. citeturn43view0
+
+Em contraponto, os problemas mais repetidos foram igualmente consistentes. AppBrain e Chrome-Stats registram comentários sobre **crash**, **glitch**, **lag de mensagens**, **notificações falhando**, **problemas ao postar ou visualizar imagens**, além do incômodo com **ads**. Um review citado pelo AppBrain diz que as imagens eram a “saving grace” do app e que a quebra nisso degradava muito a experiência; outro reclama de **phone verification** exigida para listar campanhas como LFP. citeturn22view0turn38view0
+
+A leitura analítica, portanto, é esta: os recursos mais valiosos não eram os mais “vistosos”, e sim os que reduziam fricção no PbP.
+
+| Mais valorizado | Sinal de valor | Evidência |
+|---|---|---|
+| Fichas customizadas e homebrew | Usuários tinham dificuldade de achar substituto porque quase tudo era rígido demais ou focado só em 5e. | citeturn42view0turn40search13turn49view0 |
+| Chat por persona | Falar como personagem, NPC ou narrador era um diferencial prático do fluxo de jogo. | citeturn23view0turn32view3turn42view0 |
+| Descoberta pública de campanhas | A ausência desse recurso em alternativas foi lamentada diretamente por usuários. | citeturn28search0turn12search1 |
+| Conveniência mobile e assíncrona | O app era útil justamente quando agendas deixavam mesas síncronas inviáveis. | citeturn17view0turn23view0turn49view0 |
+| Preservação de campanhas | A comunidade reagiu fortemente à possibilidade de exportar logs no encerramento. | citeturn23view0turn43view0 |
+
+| Mais criticado | Sinal de desgaste | Evidência |
+|---|---|---|
+| Instabilidade e bugs | Crashes, glitches e tela/fluxo quebrando aparecem em mais de um espelho de reviews. | citeturn22view0turn38view0 |
+| Imagens | Envio, seleção e renderização de imagens aparecem como dor recorrente e exigiram correções em changelogs. | citeturn20view1turn24view0turn22view0 |
+| Notificações e entrega de mensagens | Reviews mencionam campanhas “glitching”, mensagens não chegando e lags. | citeturn22view0turn38view0 |
+| Ads e monetização mal percebida | Havia ads e subscription para removê-los; usuários citavam ads como irritantes. | citeturn24view0turn23view0turn38view0 |
+
+## MVP Android em Kotlin
+
+### Escopo mínimo priorizado
+
+O MVP abaixo foi desenhado para preservar o **núcleo de valor** que o mRPG tinha para sua comunidade, ao mesmo tempo evitando o erro de scope creep em direção a um VTT completo.
+
+| Recurso | Situação no mRPG original | MVP proposto | Decisão |
+|---|---|---|---|
+| Conta básica e perfil | Sim. | **Release inicial** | Essencial para identidade, convites e ownership. |
+| Campanha CRUD | Sim. citeturn17view0turn23view0 | **Release inicial** | Sem isso não existe produto. |
+| Feed público/LFP | Sim. citeturn28search0turn28search7 | **Release dois** | Diferencial competitivo; entra logo após o núcleo local/social ficar estável. |
+| Entrada por pedido/aceite | Sim. citeturn17view0turn23view0 | **Release dois** | Fecha o loop GM ↔ jogador. |
+| Chat assíncrono | Sim. citeturn17view0turn23view0 | **Release inicial** | Núcleo da experiência. |
+| Falar como eu / personagem / NPC / narrador | Sim. citeturn23view0turn32view3 | **Release inicial** | Um dos maiores diferenciais afetivos e funcionais. |
+| Fichas customizadas | Sim. citeturn28search0turn23view0 | **Release inicial** | Prioridade máxima porque é o principal bloqueador em alternativas. |
+| Fórmulas e referência por campo | Sim. citeturn24view0 | **Release dois** | Entrar com DSL segura e restrita; não precisa ser Turing-complete. |
+| Rolagem inline no chat | Sim. citeturn17view0turn23view0 | **Release inicial** | Sem roller embutido, o app perde legitimidade para PbP. |
+| Macros | Sim. citeturn28search0turn32view2 | **Release dois** | Depois que roller e sheet v1 estiverem estáveis. |
+| Inventário e log | Sim, ao menos por UI e sinais de changelog. citeturn32view1turn24view0 | **Release dois** | Muito valioso, mas não precisa estar no dia zero. |
+| Imagens no chat | Sim. citeturn17view0turn24view0 | **Release dois** | Importante, mas historicamente fonte de bugs; vale entrar com escopo controlado. |
+| Editar/apagar mensagens | Sim. citeturn24view0 | **Release dois** | Boa UX, porém não fundamental para validar o produto. |
+| Push + sync entre dispositivos | Sim. citeturn36search3turn4view0 | **Release dois** | Necessário para retenção real. |
+| Exportar campanhas | Confirmado no fechamento. citeturn23view0turn43view0 | **Release três** | Deve entrar cedo como diferencial de confiança e portabilidade. |
+| Web client | Havia uso web. citeturn36search3turn28search0 | **Pós-MVP** | Importante, mas não necessário para validar Android primeiro. |
+| Mapas/tokens/fog of war | Sem evidência robusta no mRPG. citeturn17view0turn49view0 | **Fora do MVP** | Desvia foco do valor real percebido pelos usuários. |
+| Compêndios/módulos oficiais | Sem evidência robusta. citeturn28search0turn30view0 | **Fora do MVP** | Alto custo jurídico e editorial; baixo valor para validar produto. |
+
+A minha shortlist mínima, portanto, é: **campanha + chat por persona + ficha customizada + roller + sincronização confiável**. Todo o resto orbita esse núcleo.
+
+### Arquitetura técnica recomendada
+
+Com **Android 7.0+ (API 24)** como baseline, você continua em território confortável para uma stack moderna, e isso conversa bem com o objetivo de funcionar na maioria das versões ainda relevantes sem sacrificar demais produtividade. O ecossistema Jetpack é justamente descrito pelo Google como um conjunto de bibliotecas para seguir boas práticas e escrever código que funcione de forma consistente em diferentes versões Android. Para persistência local, **Room** continua sendo a escolha natural para entidades de campanha, personagem, mensagem e outbox de sincronização; para preferências e pequenos objetos tipados, **DataStore** é melhor do que SharedPreferences, com armazenamento assíncrono e transacional. Para sincronização resiliente em background, **WorkManager** existe exatamente para trabalho persistente que precisa sobreviver a reinicializações e reboots; e para notificações/sinais de sync, **FCM** resolve o push cross-platform com payloads pequenos e confiáveis. Coroutines e Flow permanecem a base correta para concorrência e streams reativos no cliente. citeturn51search0turn52search17turn52search0turn52search1turn51search17turn51search2turn51search3turn51search7
+
+A arquitetura que eu recomendaria é **offline-first com outbox**:
+
+| Camada | Responsabilidade | Stack sugerida |
+|---|---|---|
+| UI | Telas, estados, navegação, composição do chat e editor de ficha | Kotlin, Jetpack Compose, Navigation, Material 3 |
+| Domain | Casos de uso: criar campanha, entrar em mesa, postar mensagem, trocar persona, rolar dado, salvar ficha, sincronizar | Kotlin + Coroutines/Flow |
+| Data local | Banco principal, cache de feed, mensagens, fichas, eventos pendentes, preferências | Room + DataStore |
+| Sync | Outbox, retries, reconciliação, tombstones, backoff exponencial | WorkManager + repositórios |
+| Network | Auth, campanhas, mensagens, anexos, presença mínima, push-ack | REST JSON + WebSocket ou SSE para atualizações em tempo real |
+| Backend | Autenticação, API de campanha/chat, media, busca/LFP, notificações | Preferencialmente Kotlin/Ktor para compartilhar modelos serializáveis; alternativa pragmática: backend leve em Node/Supabase/Firebase |
+| Observabilidade | Crash, tracing de sync, latência de upload, métricas de entrega de push | Crashlytics/Sentry + logs estruturados |
+
+A decisão mais importante aqui é não modelar o sync como “a UI fala direto com a API”. Em vez disso, toda mutação local deve gerar um **evento no outbox**, persistido no Room. A UI considera a ação concluída localmente; o sync assíncrono empurra para o servidor quando houver rede. Isso resolve duas dores históricas do próprio mRPG: **mensagens/entregas inconsistentes** e **bugs de estado em campanha**. citeturn22view0turn38view0
+
+Também recomendo uma **DSL pequena e segura** para fórmulas/macros, em vez de usar `eval` ou uma engine genérica. O mRPG original já apontava nessa direção ao ligar fórmulas/rolagens a **referências internas de campos**; para o MVP, basta aceitar expressões do tipo `1d20 + str_mod + weapon_bonus`, com parser próprio e operadores aritméticos básicos. citeturn24view0
+
+### Telas e fluxos de usuário
+
+| Tela | Objetivo | Fluxo principal |
+|---|---|---|
+| Onboarding e login | Criar conta, recuperar sessão, aceitar política | Entrar → criar perfil → escolher avatar → ir para Home |
+| Home | Mostrar campanhas do usuário e atalhos principais | Ver “Minhas campanhas” → abrir campanha → continuar chat |
+| Feed público de mesas | Descobrir campanhas LFP com filtros | Filtrar por idioma/fuso/sistema/tags → pedir entrada |
+| Campanha | Hub da mesa | Ver participantes → abrir chat → abrir personagens |
+| Chat da campanha | Jogo PbP | Selecionar persona → enviar texto, imagem ou rolagem → editar/apagar se permitido |
+| Personagens | Ver personagens atribuídos, NPCs e logs | Abrir ficha → editar valores → salvar localmente |
+| Editor de template | Criar modelo de ficha do sistema | Adicionar seção → criar campo → marcar chave interna → definir fórmula |
+| Composer de rolagem/macro | Montar rolagens rápidas e macros reutilizáveis | Digitar expressão ou escolher macro → pré-visualizar → enviar ao chat |
+| Solicitações de entrada | Fluxo GM de recrutamento | Ler pedido → aceitar/recusar → atribuir personagem |
+| Notificações/inbox | Central de eventos | Ver menções, pedidos de entrada, novas mensagens |
+| Configurações | Preferências, exportação, privacidade | Mutar campanha → exportar dados → excluir conta |
+
+Fluxos críticos do MVP:
+
+**Criar campanha**: Home → Nova campanha → nome/descrição/tags → escolher template de ficha → salvar → abrir chat inicial.  
+**Entrar em campanha pública**: Feed → filtros → abrir campanha → enviar pedido com apresentação opcional → aguardar aceite.  
+**Jogar por persona**: Campanha → chat → trocar persona → enviar texto/rolagem/imagem.  
+**Editar ficha**: Personagens → ficha → alterar campos → salvar → recalcular fórmulas locais.  
+**Sincronizar**: qualquer alteração cria evento local → WorkManager envia → servidor confirma → UI atualiza estado de sync.
+
+### Estratégia de monetização para o MVP
+
+O mRPG tinha **ads** e uma opção paga para removê-los, mas a própria base de reviews mostra que ads eram parte da irritação percebida. Para um MVP novo, eu **não começaria com ads**. Começaria com **grátis**, focado em retenção e estabilidade. Depois, se houver tração, o melhor caminho é um modelo **opt-in**: assinatura para **backup avançado**, **exportação em PDF bonita**, **temas**, **maior storage de mídia** ou **web companion**, mas sem travar os recursos centrais de jogar. citeturn23view0turn24view0turn38view0
+
+## Estimativa de esforço, releases e riscos
+
+### Estimativa por feature
+
+As horas abaixo assumem **1 desenvolvedor Kotlin Android experiente**, backend leve já definido e design funcional, não branding premium.
+
+| Feature | Horas estimadas | Complexidade | Release |
+|---|---:|---|---|
+| Fundamentos do projeto, CI, arquitetura base | 20–28 | Média | Inicial |
+| Autenticação e perfil | 12–18 | Média | Inicial |
+| Banco local e modelos Room/DataStore | 18–24 | Média | Inicial |
+| CRUD de campanha e participantes | 18–26 | Média | Inicial |
+| Chat assíncrono local + UI de timeline | 28–40 | Alta | Inicial |
+| Persona switching | 12–18 | Média | Inicial |
+| Ficha customizada v1 | 40–64 | Alta | Inicial |
+| Dice roller v1 | 16–24 | Média | Inicial |
+| Feed público/LFP + filtros | 24–36 | Alta | Dois |
+| Solicitação/aceite de entrada | 12–18 | Média | Dois |
+| Imagens no chat | 20–32 | Alta | Dois |
+| Macros v1 | 20–32 | Alta | Dois |
+| Fórmulas/referências de campo | 20–36 | Alta | Dois |
+| Sync offline-first + outbox + retries | 32–48 | Alta | Dois |
+| Push notifications | 12–18 | Média | Dois |
+| Inventário/log na ficha | 18–28 | Média | Dois |
+| Editar/apagar mensagens | 10–16 | Baixa | Dois |
+| Exportar campanha | 12–20 | Média | Três |
+| Moderação básica, muting e hardening | 16–24 | Média | Três |
+| QA de regressão, telemetry e estabilização | 28–40 | Alta | Três |
+
+**Faixa total realista do MVP**: **350 a 520 horas**.  
+Para um cronograma solo, isso costuma significar **10 a 16 semanas** dependendo da dedicação semanal.
+
+### Roadmap em três releases
+
+| Release | Foco | Entregáveis |
+|---|---|---|
+| Alpha funcional | Reproduzir o núcleo do mRPG | Login, perfil, campanhas, chat por persona, fichas customizadas v1, roller v1, persistência local |
+| Beta social | Tornar o app utilizável para mesas reais | Feed público/LFP, filtros, pedidos de entrada, sync confiável, push, imagens, macros, inventário/log, editar/apagar |
+| Release estável | Confiabilidade, portabilidade e retenção | Exportação, moderação básica, métricas, correções de sync, melhorias de UX, endurecimento de mídia e notificações |
+
+### Gantt simplificado
+
+| Frente | S1 | S2 | S3 | S4 | S5 | S6 | S7 | S8 | S9 | S10 | S11 | S12 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Fundamentos e arquitetura | █ | █ |  |  |  |  |  |  |  |  |  |  |
+| Modelos locais e persistência | █ | █ | █ |  |  |  |  |  |  |  |  |  |
+| Conta e perfil |  | █ | █ |  |  |  |  |  |  |  |  |  |
+| Campanhas e participantes |  | █ | █ | █ |  |  |  |  |  |  |  |  |
+| Chat por persona |  |  | █ | █ | █ |  |  |  |  |  |  |  |
+| Ficha customizada v1 |  |  | █ | █ | █ | █ |  |  |  |  |  |  |
+| Roller v1 |  |  |  | █ | █ |  |  |  |  |  |  |  |
+| Feed LFP e filtros |  |  |  |  | █ | █ | █ |  |  |  |  |  |
+| Sync/outbox/push |  |  |  |  |  | █ | █ | █ | █ |  |  |  |
+| Imagens e mídia |  |  |  |  |  | █ | █ | █ |  |  |  |  |
+| Macros e fórmulas |  |  |  |  |  |  | █ | █ | █ |  |  |  |
+| Inventário/log |  |  |  |  |  |  |  | █ | █ |  |  |  |
+| Exportação e moderação |  |  |  |  |  |  |  |  | █ | █ |  |  |
+| QA, hardening e publicação |  |  |  |  |  |  |  |  |  | █ | █ | █ |
+
+### Riscos e mitigação
+
+Os problemas históricos relatados por usuários do mRPG são quase um checklist do que deve ser tratado como requisito não funcional já no MVP: **lag**, **imagens**, **mensagens/notificações** e **bugs de estabilidade**. citeturn22view0turn38view0turn20view1
+
+| Risco | Impacto | Mitigação |
+|---|---|---|
+| Engine de ficha virar um “produto dentro do produto” | Atraso forte | Começar com 6–8 tipos de campo apenas: texto, número, textarea, select, boolean, lista simples, inventário simples, fórmula |
+| Sync conflituoso | Dados inconsistentes | Outbox persistente, IDs estáveis, timestamps de servidor, merge por tipo de entidade, mensagens imutáveis |
+| Upload/renderização de imagem quebrar | Reputação ruim e custo alto | Limite de tamanho, compressão local, thumbnails, fila de upload, retry, object storage barato |
+| Push falhar ou atrasar | Retenção despenca | FCM só como “nudge”; sempre manter fallback de pull incremental com WorkManager |
+| Scope creep para VTT com mapas/tokens | MVP nunca sai | Explicitamente deixar mapas interativos e fog of war fora do MVP |
+| Abuso/moderação | Risco de store policy e churn | Report, block, mute, rate limit, política clara, revisão mínima de denúncias |
+| Dependência excessiva de BaaS | Bloqueio técnico/custo futuro | Isolar camada de backend via interfaces e DTOs próprios; não acoplar regras de domínio ao vendor |
+| Monetização prematura via ads | Experiência pior | Postergar ads; monetizar portabilidade, storage e conveniência após estabilidade |
+
+## Estruturas de dados e pseudocódigo Kotlin
+
+### Modelo de dados central
+
+O mRPG original deixava uma grande lição: **campanha, personagem, persona, template de ficha e mensagem são entidades de primeira classe**. No MVP, eu modelaria assim:
+
+```kotlin
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Campaign(
+    val id: String,
+    val title: String,
+    val description: String,
+    val ownerUserId: String,
+    val isLookingForPlayers: Boolean,
+    val tags: List<String>,
+    val language: String,
+    val timezone: String,
+    val createdAt: Long,
+    val updatedAt: Long
+)
+
+@Serializable
+data class Character(
+    val id: String,
+    val campaignId: String,
+    val ownerUserId: String?,
+    val displayName: String,
+    val portraitUrl: String?,
+    val roleType: RoleType, // PLAYER, NPC, NARRATOR
+    val templateId: String,
+    val status: EntitySyncStatus
+)
+
+enum class RoleType { PLAYER, NPC, NARRATOR }
+enum class EntitySyncStatus { LOCAL_ONLY, SYNCED, DIRTY, DELETED }
+
+@Serializable
+data class SheetTemplate(
+    val id: String,
+    val campaignId: String,
+    val name: String,
+    val sections: List<SheetSection>
+)
+
+@Serializable
+data class SheetSection(
+    val id: String,
+    val title: String,
+    val fields: List<SheetFieldDef>
+)
+
+@Serializable
+data class SheetFieldDef(
+    val id: String,
+    val key: String,              // referência interna, ex: "str_mod"
+    val label: String,
+    val type: FieldType,
+    val defaultValue: String? = null,
+    val formula: String? = null,  // ex: "1d20 + str_mod + prof"
+    val options: List<String> = emptyList(),
+    val visibility: Visibility = Visibility.PUBLIC
+)
+
+enum class FieldType {
+    TEXT, NUMBER, TEXTAREA, BOOLEAN, SELECT, INVENTORY_LIST, COMPUTED
+}
+
+enum class Visibility { PUBLIC, PLAYER_ONLY, GM_ONLY }
+
+@Serializable
+data class SheetValue(
+    val characterId: String,
+    val fieldKey: String,
+    val rawValue: String
+)
+
+@Serializable
+data class ChatMessage(
+    val id: String,
+    val campaignId: String,
+    val senderUserId: String,
+    val senderCharacterId: String?, // null = "eu mesmo"
+    val kind: MessageKind,
+    val body: String?,
+    val imageUrl: String?,
+    val rollResultJson: String?,
+    val createdAt: Long,
+    val editedAt: Long? = null,
+    val deletedAt: Long? = null,
+    val syncStatus: EntitySyncStatus
+)
+
+enum class MessageKind { TEXT, IMAGE, ROLL, SYSTEM }
+
+@Serializable
+data class OutboxEvent(
+    val id: String,
+    val entityType: String,
+    val entityId: String,
+    val operation: String, // CREATE, UPDATE, DELETE
+    val payloadJson: String,
+    val attempts: Int,
+    val nextRetryAt: Long
+)
+```
+
+### Pseudocódigo Kotlin para rolagem de dados
+
+O roller do MVP deve ser simples, previsível e auditável. Nada de `eval`. O parser deve aceitar o básico primeiro: `NdM`, modificador fixo e depois, no release seguinte, referências a campos.
+
+```kotlin
+data class DiceExpression(
+    val count: Int,
+    val sides: Int,
+    val modifier: Int = 0
+)
+
+data class DiceRollResult(
+    val rolls: List<Int>,
+    val modifier: Int,
+    val total: Int,
+    val expression: String
+)
+
+object DiceParser {
+    // Aceita: 1d20, d20, 3d6+2, 2d10-1
+    private val regex = Regex("""^\s*(\d*)d(\d+)\s*([+-]\s*\d+)?\s*$""")
+
+    fun parse(input: String): DiceExpression {
+        val match = regex.matchEntire(input)
+            ?: error("Expressão de dado inválida: $input")
+
+        val count = match.groupValues[1].ifBlank { "1" }.toInt()
+        val sides = match.groupValues[2].toInt()
+        val modifier = match.groupValues[3]
+            .replace(" ", "")
+            .ifBlank { "0" }
+            .toInt()
+
+        require(count in 1..100) { "Quantidade de dados fora do limite" }
+        require(sides in 2..1000) { "Número de faces fora do limite" }
+
+        return DiceExpression(count, sides, modifier)
+    }
+}
+
+object DiceRoller {
+    fun roll(expression: String, randomInt: (Int, Int) -> Int): DiceRollResult {
+        val parsed = DiceParser.parse(expression)
+
+        val rolls = buildList {
+            repeat(parsed.count) {
+                add(randomInt(1, parsed.sides))
+            }
+        }
+
+        val total = rolls.sum() + parsed.modifier
+
+        return DiceRollResult(
+            rolls = rolls,
+            modifier = parsed.modifier,
+            total = total,
+            expression = expression
+        )
+    }
+}
+```
+
+Para aproximar a ergonomia do mRPG, a etapa seguinte é resolver referências de ficha antes do parse:
+
+```kotlin
+fun substituteSheetKeys(
+    expression: String,
+    values: Map<String, String>
+): String {
+    // Exemplo: "1d20 + str_mod + prof"
+    var result = expression
+    values.forEach { (key, value) ->
+        result = result.replace("""\b$key\b""".toRegex(), value)
+    }
+    return result
+}
+```
+
+### Pseudocódigo Kotlin para ficha customizada e campos calculados
+
+A principal escolha de produto aqui é **limitar a linguagem de fórmula**. Para o MVP, basta resolver dependências simples e impedir ciclos.
+
+```kotlin
+class SheetEngine {
+
+    fun evaluateComputedFields(
+        template: SheetTemplate,
+        rawValues: Map<String, String>
+    ): Map<String, String> {
+        val resolved = rawValues.toMutableMap()
+
+        val computedFields = template.sections
+            .flatMap { it.fields }
+            .filter { it.type == FieldType.COMPUTED && !it.formula.isNullOrBlank() }
+
+        repeat(computedFields.size) {
+            var changed = false
+
+            for (field in computedFields) {
+                val substituted = substituteKeys(field.formula!!, resolved)
+                val evaluated = safeArithmeticEval(substituted)
+
+                if (resolved[field.key] != evaluated) {
+                    resolved[field.key] = evaluated
+                    changed = true
+                }
+            }
+
+            if (!changed) return resolved
+        }
+
+        error("Ciclo detectado em campos computados")
+    }
+
+    private fun substituteKeys(
+        formula: String,
+        values: Map<String, String>
+    ): String {
+        var result = formula
+        values.forEach { (key, value) ->
+            result = result.replace("""\b$key\b""".toRegex(), value)
+        }
+        return result
+    }
+
+    private fun safeArithmeticEval(input: String): String {
+        // Pseudocódigo: aceitar apenas números, + - * / () e espaços.
+        require(input.matches(Regex("""^[\d+\-*/().\s]+$"""))) {
+            "Fórmula contém tokens não permitidos"
+        }
+        return ArithmeticEvaluator.eval(input).toString()
+    }
+}
+```
+
+### Pseudocódigo Kotlin para salvamento local e sincronização
+
+Aqui está a diferença entre um clone frágil e um sucessor realmente sólido: toda escrita vai para o banco local **antes** de falar com a rede.
+
+```kotlin
+class MessageRepository(
+    private val messageDao: MessageDao,
+    private val outboxDao: OutboxDao,
+    private val clock: () -> Long,
+    private val json: Json
+) {
+
+    suspend fun sendTextMessage(
+        campaignId: String,
+        senderUserId: String,
+        senderCharacterId: String?,
+        body: String
+    ) {
+        val now = clock()
+
+        val message = ChatMessage(
+            id = generateUuid(),
+            campaignId = campaignId,
+            senderUserId = senderUserId,
+            senderCharacterId = senderCharacterId,
+            kind = MessageKind.TEXT,
+            body = body,
+            imageUrl = null,
+            rollResultJson = null,
+            createdAt = now,
+            syncStatus = EntitySyncStatus.LOCAL_ONLY
+        )
+
+        messageDao.insert(message)
+
+        outboxDao.insert(
+            OutboxEvent(
+                id = generateUuid(),
+                entityType = "message",
+                entityId = message.id,
+                operation = "CREATE",
+                payloadJson = json.encodeToString(ChatMessage.serializer(), message),
+                attempts = 0,
+                nextRetryAt = now
+            )
+        )
+    }
+}
+```
+
+Worker de sincronização:
+
+```kotlin
+class SyncOutboxWorker(
+    appContext: Context,
+    params: WorkerParameters,
+    private val api: SyncApi,
+    private val outboxDao: OutboxDao,
+    private val messageDao: MessageDao,
+    private val json: Json
+) : CoroutineWorker(appContext, params) {
+
+    override suspend fun doWork(): Result {
+        val pending = outboxDao.findReady(limit = 50)
+
+        for (event in pending) {
+            try {
+                when (event.entityType) {
+                    "message" -> syncMessageCreate(event)
+                    else -> Unit
+                }
+                outboxDao.delete(event.id)
+            } catch (ex: IOException) {
+                outboxDao.reschedule(
+                    id = event.id,
+                    attempts = event.attempts + 1,
+                    nextRetryAt = computeBackoff(event.attempts + 1)
+                )
+                return Result.retry()
+            } catch (ex: HttpException) {
+                if (ex.code() in 400..499) {
+                    outboxDao.markDeadLetter(event.id, ex.code())
+                } else {
+                    outboxDao.reschedule(
+                        id = event.id,
+                        attempts = event.attempts + 1,
+                        nextRetryAt = computeBackoff(event.attempts + 1)
+                    )
+                    return Result.retry()
+                }
+            }
+        }
+
+        return Result.success()
+    }
+
+    private suspend fun syncMessageCreate(event: OutboxEvent) {
+        val message = json.decodeFromString(ChatMessage.serializer(), event.payloadJson)
+        val serverCopy = api.createMessage(message)
+        messageDao.markSynced(localId = message.id, serverTimestamp = serverCopy.createdAt)
+    }
+
+    private fun computeBackoff(attempts: Int): Long {
+        val seconds = minOf(300, 2.0.pow(attempts.toDouble()).toLong())
+        return System.currentTimeMillis() + seconds * 1000
+    }
+}
+```
+
+Agendamento do Worker:
+
+```kotlin
+fun enqueueSync(context: Context) {
+    val request = OneTimeWorkRequestBuilder<SyncOutboxWorker>()
+        .setConstraints(
+            Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+        )
+        .build()
+
+    WorkManager.getInstance(context).enqueueUniqueWork(
+        "sync-outbox",
+        ExistingWorkPolicy.KEEP,
+        request
+    )
+}
+```
+
+Esse padrão permite três comportamentos que valem ouro para um sucessor espiritual do mRPG:
+
+- jogar mesmo com rede instável;
+- não perder mensagem digitada;
+- recuperar o estado após crash, reboot ou retomada do app.
+
+A lição mais forte que sai da pesquisa é simples: o mRPG era amado **não** porque fazia tudo, mas porque combinava, num fluxo leve de celular, **descoberta pública de campanhas**, **chat por persona** e **fichas realmente customizáveis**. O MVP certo é o que reconstrói esse trio com muito mais confiabilidade do que o original conseguiu sustentar nos seus últimos anos. citeturn42view0turn49view0turn12search1turn22view0turn38view0
