@@ -1,0 +1,29 @@
+dice_roll = 
+    roll, [ roll_modifiers ]
+;
+
+roll = 
+    basic_roll | fate_roll
+;
+
+basic_roll = 
+    (number | bracketed_expression), "d", number
+;
+
+fate_roll = 
+    (number | bracketed_expression), "d", "F"
+;
+
+roll_modifiers = 
+    roll_modifier, { roll_modifier }
+;
+
+roll_modifier = 
+    explode_modifier |
+    keep_modifier |
+    drop_modifier |
+    critical_modifier |
+    reroll_modifier |
+    sort_modifier |
+    compare_modifier |
+;

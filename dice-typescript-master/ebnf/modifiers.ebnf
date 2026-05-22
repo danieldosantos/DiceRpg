@@ -1,0 +1,27 @@
+explode_modifier = 
+    "!", ["!"], ["p"], [compare_modifier]
+;
+
+keep_modifier = 
+    "k", ["h" | "l"], [number | bracketed_expression]
+;
+
+drop_modifier =
+    "d", ["h" | "l"], [number | bracketed_expression]
+;
+
+critical_modifier = 
+    "c", ["s" | "f"], [compare_modifier]
+;
+
+reroll_modifier =
+    "r", ["o"], [compare_modifier]
+;
+
+sort_modifier = 
+    "s", ["a" | "d"]
+;
+
+compare_modifier = 
+    [boolean_operator], (number | bracketed_expression)
+;

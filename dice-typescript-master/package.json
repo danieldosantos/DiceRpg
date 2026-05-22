@@ -1,0 +1,55 @@
+{
+  "name": "dice-typescript",
+  "version": "1.6.1",
+  "description": "A TypeScript library for parsing dice rolling expressions, most commonly used in tabletop RPGs.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "npm run clean && npm run lint && npm run tsc",
+    "clean": "node ./node_modules/rimraf/bin ./dist && node ./node_modules/rimraf/bin ./coverage",
+    "coverage": "istanbul coverage",
+    "codacy": "cat ./coverage/lcov/lcov.info | codacy-coverage --verbose",
+    "lint": "tslint -p ./tslint.json",
+    "lint:fix": "tslint -p ./tslint.json --fix",
+    "tsc": "tsc --project ./tsconfig.build.json",
+    "test": "npm run lint && karma start --single-run",
+    "test:watch": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trwolfe13/dice-typescript.git"
+  },
+  "keywords": [
+    "dice",
+    "dice-roller",
+    "dice-notation",
+    "rpg",
+    "rpg-dice-roller",
+    "parser",
+    "generator",
+    "random",
+    "typescript"
+  ],
+  "author": "Tom Wolfe <trwolfe13@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trwolfe13/dice-typescript/issues"
+  },
+  "homepage": "https://github.com/trwolfe13/dice-typescript#readme",
+  "devDependencies": {
+    "@types/jasmine": "^2.8.9",
+    "@types/random-js": "^1.0.31",
+    "codacy-coverage": "^3.1.0",
+    "istanbul": "^0.4.5",
+    "jasmine-core": "3.2.1",
+    "karma": "^3.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.2",
+    "karma-typescript": "^3.0.13",
+    "rimraf": "^2.6.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.1"
+  },
+  "dependencies": {
+    "random-js": "^1.0.8"
+  }
+}
